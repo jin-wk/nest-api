@@ -24,7 +24,7 @@ export class AuthController {
   @HttpCode(200)
   async login(
     @Body(ValidationPipe) loginUserDto: LoginUserDto,
-  ): Promise<string> {
+  ): Promise<{ token: string }> {
     return await this.authService.login(loginUserDto);
   }
 }

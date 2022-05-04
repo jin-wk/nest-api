@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto, RegisterUserDto } from './user.dto';
@@ -15,13 +16,14 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async register(registerUserDto: RegisterUserDto): Promise<User> {
     const { email, name, password, passwordConfirm } = registerUserDto;
     const user = new User();
 
-    if ((await this.userRepository.countBy({ email: email })) > 0) {
+    if ((await this.userRepository.countBy({ email })) > 0) {
       throw new ConflictException(['The email is exists']);
     }
 
@@ -41,14 +43,17 @@ export class AuthService {
     return await this.userRepository.save(user);
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<string> {
+  async login(loginUserDto: LoginUserDto): Promise<{ token: string }> {
     const { email, password } = loginUserDto;
-    const user = await this.userRepository.findOneBy({ email: email });
+    const user = await this.userRepository.findOneBy({ email });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException();
     }
 
-    return 'Ok';
+    const payload = { id: user.id };
+    const token = this.jwtService.sign(payload);
+
+    return { token };
   }
 }
