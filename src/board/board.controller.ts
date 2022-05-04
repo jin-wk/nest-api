@@ -7,7 +7,6 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateBoardDto, UpdateBoardDto } from './board.dto';
@@ -24,8 +23,9 @@ export class BoardsController {
   }
 
   @Post()
-  @UsePipes(ValidationPipe)
-  async create(@Body() createBoardDto: CreateBoardDto): Promise<Board> {
+  async create(
+    @Body(ValidationPipe) createBoardDto: CreateBoardDto,
+  ): Promise<Board> {
     return await this.boardsService.create(createBoardDto);
   }
 
@@ -42,7 +42,7 @@ export class BoardsController {
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateBoardDto: UpdateBoardDto,
+    @Body(ValidationPipe) updateBoardDto: UpdateBoardDto,
   ): Promise<Board> {
     return await this.boardsService.update(id, updateBoardDto);
   }
