@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Board } from './board.entity';
 import { CreateBoardDto, UpdateBoardDto } from './board.dto';
+import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class BoardsService {
@@ -15,9 +16,10 @@ export class BoardsService {
     return await this.boardRepository.find();
   }
 
-  async create(createBoardDto: CreateBoardDto): Promise<Board> {
+  async create(createBoardDto: CreateBoardDto, user: User): Promise<Board> {
     const board: Board = new Board();
 
+    board.user_id = user.id;
     board.title = createBoardDto.title;
     board.content = createBoardDto.content;
 

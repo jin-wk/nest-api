@@ -1,9 +1,12 @@
+import { User } from 'src/auth/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('boards')
@@ -25,4 +28,8 @@ export class Board {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @ManyToOne(() => User, (user) => user.boards, { eager: true })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }

@@ -7,13 +7,18 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from 'src/auth/user.decorator';
+import { User } from 'src/auth/user.entity';
 import { CreateBoardDto, UpdateBoardDto } from './board.dto';
 import { Board } from './board.entity';
 import { BoardsService } from './board.service';
 
 @Controller('boards')
+@UseGuards(AuthGuard())
 export class BoardsController {
   constructor(private readonly boardsService: BoardsService) {}
 
@@ -25,8 +30,9 @@ export class BoardsController {
   @Post()
   async create(
     @Body(ValidationPipe) createBoardDto: CreateBoardDto,
+    @GetUser() user: User,
   ): Promise<Board> {
-    return await this.boardsService.create(createBoardDto);
+    return await this.boardsService.create(createBoardDto, user);
   }
 
   @Get(':id')
