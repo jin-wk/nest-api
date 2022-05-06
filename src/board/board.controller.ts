@@ -41,8 +41,11 @@ export class BoardsController {
   }
 
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return await this.boardsService.delete(id);
+  async delete(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return await this.boardsService.delete(id, user);
   }
 
   @Put(':id')
