@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   ParseIntPipe,
   Post,
@@ -20,10 +21,12 @@ import { BoardsService } from './board.service';
 @Controller('boards')
 @UseGuards(AuthGuard())
 export class BoardsController {
+  private readonly logger = new Logger('BoardsController');
   constructor(private readonly boardsService: BoardsService) {}
 
   @Get()
   async list(): Promise<Board[]> {
+    this.logger.verbose(`User trying to get all boards`);
     return await this.boardsService.list();
   }
 
@@ -32,6 +35,11 @@ export class BoardsController {
     @Body(ValidationPipe) createBoardDto: CreateBoardDto,
     @GetUser() user: User,
   ): Promise<Board> {
+    this.logger.verbose(
+      `User ${user.name} creating a new board. Payload: ${JSON.stringify(
+        createBoardDto,
+      )}`,
+    );
     return await this.boardsService.create(createBoardDto, user);
   }
 
