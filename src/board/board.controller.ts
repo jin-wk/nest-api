@@ -22,7 +22,7 @@ import { BoardsService } from './board.service';
 @UseGuards(AuthGuard())
 export class BoardsController {
   private readonly logger = new Logger('BoardsController');
-  constructor(private readonly boardsService: BoardsService) {}
+  constructor(private readonly boardsService: BoardsService) { }
 
   @Get()
   async list(): Promise<Board[]> {

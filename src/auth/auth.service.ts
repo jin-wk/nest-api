@@ -17,7 +17,7 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async register(registerUserDto: RegisterUserDto): Promise<User> {
     const { email, name, password, passwordConfirm } = registerUserDto;
@@ -26,6 +26,10 @@ export class AuthService {
     if ((await this.userRepository.countBy({ email })) > 0) {
       throw new ConflictException(['The email is exists']);
     }
+
+    console.log(password);
+    console.log(passwordConfirm);
+    console.log(registerUserDto);
 
     if (password !== passwordConfirm) {
       throw new BadRequestException([
