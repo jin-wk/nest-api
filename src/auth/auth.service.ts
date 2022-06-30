@@ -27,10 +27,6 @@ export class AuthService {
       throw new ConflictException(['The email is exists']);
     }
 
-    console.log(password);
-    console.log(passwordConfirm);
-    console.log(registerUserDto);
-
     if (password !== passwordConfirm) {
       throw new BadRequestException([
         'Password and PasswordConfirm must be the same',
